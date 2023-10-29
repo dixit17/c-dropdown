@@ -9,7 +9,7 @@ export type ListItem = {
 
 @customElement("c-dropdown")
 export class CDropdown extends LitElement {
-  static styles = [
+  static styles = 
     css`
       .c-main-container {
       display: flex;
@@ -99,8 +99,7 @@ export class CDropdown extends LitElement {
         color: #ffffff;
         font-weight: bold;
       }
-    `,
-  ];
+    `;
 
   @state() isOpen = false;
 
@@ -171,8 +170,9 @@ export class CDropdown extends LitElement {
     const heightOffset = 10;
     const widthOffset = 10;
     if (this.isOpen) {
-      const rect = dropDownBtn?.getBoundingClientRect();
-      requestAnimationFrame(() => {
+      const rect = dropDownBtn?.getBoundingClientRect(); 
+      // need to calculate the dropdownlist height and width to set the position
+      requestAnimationFrame(() => { 
         const listWidth = dropdownList.offsetWidth;
         const listHeight = dropdownList.offsetHeight;
         console.log(rect.left);
