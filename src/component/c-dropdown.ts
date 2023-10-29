@@ -175,8 +175,6 @@ export class CDropdown extends LitElement {
       requestAnimationFrame(() => { 
         const listWidth = dropdownList.offsetWidth;
         const listHeight = dropdownList.offsetHeight;
-        console.log(rect.left);
-        console.log(listWidth);
         if(this.position ==="top" && rect.top < listHeight) {
           this.position = 'bottom'; // there is not enought space on top to show list, move to bottom
         }
