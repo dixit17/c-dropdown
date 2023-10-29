@@ -4,7 +4,7 @@ A custom web component created with LitElement that mimics a Bootstrap Dropdown.
 
 - Click on the button or any specified element to open and close the dropdown.
 - Clicking outside the dropdown closes it.
-- Each list item can have active.
+- Each list item can have active state.
 - Provides an option to configure whether the dropdown opens to the left or right of the element.
 
 ## Getting Started
