@@ -31,6 +31,17 @@ Ensure you have the following installed in your development environment:
     - npm run dev
 
 
+#Configuration
+
+<c-dropdown .id=${""} .label=${} .options=${} @onSelect=${(event: Event) => console.log(event.target)} .position=${} ></c-dropdown>
+
+    1. id: to be attached to different tags in the component.
+    2. label : label for the dropdown button
+    3. options : dropdown list having object structure as {id:null, name:"", active: false} 
+    4. onSelect : function which will be triggerd from the component on selection of dropdown list item.
+    5. position : position where the dropdown list should open ("top","left","right","bottom"),if there is 
+        not enought space to open the list, the position will be set to bottom.
+
 ###Acknowledgments
 
 1. LitElement: https://lit.dev/ 
