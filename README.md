@@ -25,10 +25,10 @@ Ensure you have the following installed in your development environment:
 2. Navigate to the project directory:
 
 3. Install the required dependencies:
-   npm install --save
+    - npm install --save
 
 4. To run the Project
-   nom run dev
+    - npm run dev
 
 
 ###Acknowledgments
