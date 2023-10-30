@@ -4,12 +4,12 @@ import { customElement, property, state } from "lit/decorators.js";
 export type ListItem = {
   id: number | null;
   name: string;
-  active:boolean;
+  active: boolean;
 };
 
 @customElement("c-dropdown")
 export class CDropdown extends LitElement {
-  static styles = 
+  static styles =
     css`
       .c-main-container {
       display: flex;
@@ -101,6 +101,10 @@ export class CDropdown extends LitElement {
       }
     `;
 
+  private dropDownBtn!: HTMLButtonElement;
+  private dropdownList!:HTMLDivElement;
+  private arrow!:HTMLSpanElement;
+
   @state() isOpen = false;
 
   @property({ type: String }) position: String = "bottom";
@@ -109,7 +113,7 @@ export class CDropdown extends LitElement {
 
   @property({ type: Array }) options: Array<ListItem> = [];
 
-  @property({ type: Object }) selected: ListItem = {id: null, name: "", active:false};
+  @property({ type: Object }) selected: ListItem = { id: null, name: "", active: false };
 
   @property({ type: String }) id: string = "c-dropdown"
 
@@ -132,7 +136,7 @@ export class CDropdown extends LitElement {
     window.addEventListener('resize', (e) => this.handleResize());
   }
 
-  onSelectItem(event:Event, item: any) {
+  onSelectItem(event: Event, item: any) {
     event.stopPropagation();
     this.selected = { ...item };
     this.dispatchEvent(new Event("onSelect"));
@@ -158,63 +162,76 @@ export class CDropdown extends LitElement {
     }
   }
 
+  positionDropdownList(left: string, top: string, rotate: string) {
+    this.dropdownList.style.left = left;
+    this.dropdownList.style.top = top;
+    this.arrow.style.transform = rotate;
+  }
+
+  resetLayout() {
+    this.dropdownList.style.left = "";
+    this.dropdownList.style.top = "";
+    this.dropdownList.style.right = "";
+    this.dropdownList.style.bottom = "";
+    this.arrow.style.transform = "rotate(0deg)";
+  }
+
   positionDropdown() {
-    const dropDownBtn = this.renderRoot.querySelector(
+    this.dropDownBtn = this.renderRoot.querySelector(
       `#c-btn-container_${this.id}`
     ) as HTMLButtonElement;
-    const dropdownList = this.renderRoot.querySelector(
+    this.dropdownList = this.renderRoot.querySelector(
       `#c-dropdown-list_${this.id}`
     ) as HTMLDivElement;
-    const arrow = this.renderRoot.querySelector(`#arrow_${this.id}`) as HTMLSpanElement;
+    this.arrow = this.renderRoot.querySelector(`#arrow_${this.id}`) as HTMLSpanElement;
 
     const heightOffset = 10;
     const widthOffset = 10;
     if (this.isOpen) {
-      const rect = dropDownBtn?.getBoundingClientRect(); 
+      const rect = this.dropDownBtn?.getBoundingClientRect();
       // need to calculate the dropdownlist height and width to set the position
-      requestAnimationFrame(() => { 
-        const listWidth = dropdownList.offsetWidth;
-        const listHeight = dropdownList.offsetHeight;
-        console.log(rect.left);
-        console.log(listWidth);
-        if(this.position ==="top" && rect.top < listHeight) {
+      requestAnimationFrame(() => {
+        const listWidth = this.dropdownList.offsetWidth;
+        const listHeight = this.dropdownList.offsetHeight;
+        let top = "";
+        let left = "";
+        if (this.position === "top" && rect.top <= window.innerHeight - rect.bottom) {
           this.position = 'bottom'; // there is not enought space on top to show list, move to bottom
         }
         if (this.position === "left" && rect.left < listWidth) {
           this.position = 'bottom'; // there is not enought space on left to show list, move to bottom
         }
-        if(this.position==="right" && rect.right + listWidth > window.innerWidth){
+        if (this.position === "right" && rect.right + listWidth > window.innerWidth) {
           this.position = 'bottom'; // there is not enought space on right to show list, move to bottom
         }
 
         // adjusting the open list items to their correct postion based on user selection
-        if(this.position === "bottom"){
-          dropdownList.style.left = rect.left + "px";
-          dropdownList.style.top = rect.bottom + heightOffset + "px";
-          arrow.style.transform = "rotate(0deg)";
-        }else if(this.position ==="top"){
-          dropdownList.style.left = rect.left + "px";
-          dropdownList.style.top = rect.bottom - listHeight - heightOffset - rect.height + "px";
-          arrow.style.transform = "rotate(180deg)";
+        if (this.position === "bottom") {
+          left = rect.left + "px";
+          top = rect.bottom + heightOffset + "px";
+          this.positionDropdownList(left, top, "rotate(0deg)")
+        } else if (this.position === "top") {
+          left = rect.left + "px";
+          top = rect.bottom - listHeight - heightOffset - rect.height + "px";
+          this.positionDropdownList(left, top, "rotate(180deg)")
         }
         else if (this.position === "left") {
-          dropdownList.style.left = rect.left - widthOffset - listWidth + 'px';
-          dropdownList.style.top = rect.top - rect.height + "px";
-          arrow.style.transform = "rotate(90deg)";
+          left = rect.left - widthOffset - listWidth + 'px';
+          top = rect.top - rect.height + "px";
+          this.positionDropdownList(left, top, "rotate(90deg)")
         } else if (this.position === "right") {
-          dropdownList.style.left = rect.right + widthOffset + "px";
-          dropdownList.style.top = rect.top - rect.height + "px";
-          arrow.style.transform = "rotate(-90deg)";
+          left = rect.right + widthOffset + "px";
+          top = rect.top - rect.height + "px";
+          this.positionDropdownList(left, top, "rotate(-90deg)")
         }
         else {
-          dropdownList.style.left = "";
-          dropdownList.style.top = "";
-          dropdownList.style.right = "";
-          dropdownList.style.bottom = "";
-          arrow.style.transform = "rotate(0deg)";
+          this.resetLayout()
         }
       });
-    } 
+    }
+    else {
+      this.resetLayout();
+    }
   }
 
 
@@ -242,7 +259,7 @@ export class CDropdown extends LitElement {
         >
           ${this.options.map((item) => html` <div
               class="c-dropdown-list-item ${item.active ? "c-active" : "not-active"}"
-              @click=${(e:Event) => this.onSelectItem(e,item)}
+              @click=${(e: Event) => this.onSelectItem(e, item)}
             >
               ${item.name}
             </div>`
